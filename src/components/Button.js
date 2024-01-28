@@ -1,51 +1,87 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { DANGER, GRAY, PRIMARY, WHITE } from '../colors';
 
 export const ButtonTypes = {
   PRIMARY: 'PRIMARY',
   DANGER: 'DANGER',
+  CANCEL: 'CANCEL',
 };
-const Button = ({ title, onPress, disabled, isLoading, buttonType }) => {
-  const colors = { PRIMARY, DANGER };
+
+const ButtonTypeColors = {
+  PRIMARY,
+  DANGER,
+  CANCEL: GRAY,
+};
+
+const Button = ({
+  title,
+  onPress,
+  disabled,
+  isLoading,
+  styles,
+  buttonType,
+}) => {
+  const Colors = ButtonTypeColors[buttonType];
   return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.container,
-        { backgroundColor: colors[buttonType].DEFAULT },
-        pressed && { backgroundColor: colors[buttonType].DARK },
-        disabled && { backgroundColor: colors[buttonType].LIGHT },
-      ]}
-      disabled={disabled}
-    >
-      {isLoading ? (
-        <ActivityIndicator size={'small'} color={GRAY.DEFAULT} />
-      ) : (
-        <Text style={styles.title}>{title}</Text>
-      )}
-    </Pressable>
+    <View style={[defaultStyles.container, styles?.container]}>
+      <Pressable
+        onPress={onPress}
+        disabled={disabled || isLoading}
+        style={({ pressed }) => [
+          defaultStyles.button,
+          {
+            backgroundColor: (() => {
+              switch (true) {
+                case disabled || isLoading:
+                  return Colors.LIGHT;
+                case pressed:
+                  return Colors.DARK;
+                default:
+                  return Colors.DEFAULT;
+              }
+            })(),
+          },
+          styles?.button,
+        ]}
+      >
+        {isLoading ? (
+          <ActivityIndicator size={'small'} color={GRAY.DARK} />
+        ) : (
+          <Text style={defaultStyles.title}>{title}</Text>
+        )}
+      </Pressable>
+    </View>
   );
 };
 
 Button.defaultProps = {
   buttonType: ButtonTypes.PRIMARY,
 };
+
 Button.propTypes = {
-  title: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+  title: PropTypes.string,
+  onPress: PropTypes.func,
   disabled: PropTypes.bool,
   isLoading: PropTypes.bool,
+  styles: PropTypes.object,
   buttonType: PropTypes.oneOf(Object.values(ButtonTypes)),
 };
 
-const styles = StyleSheet.create({
+const defaultStyles = StyleSheet.create({
   container: {
-    backgroundColor: PRIMARY.DEFAULT,
-    borderRadius: 8,
+    width: '100%',
+  },
+  button: {
+    paddingVertical: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
   },
   title: {
     color: WHITE,

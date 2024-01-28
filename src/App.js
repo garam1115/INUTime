@@ -1,11 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
+import Navigation from './navigations';
+import { LogBox } from 'react-native';
 import { UserProvider } from './contexts/UserContext';
-import Navigation from './navigations/Index';
-
 const App = () => {
+  LogBox.ignoreLogs(['AsyncStorage has been extracted from react-native core']);
+
   return (
     <UserProvider>
-      <StatusBar style="dark" />
+      <StatusBar style={'dark'} />
       <Navigation />
     </UserProvider>
   );

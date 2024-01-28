@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 const UserContext = createContext();
 
-export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+const UserProvider = ({ children }) => {
+  const [user, setUser] = useState({});
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={[user, setUser]}>
       {children}
     </UserContext.Provider>
   );
@@ -17,6 +17,6 @@ UserProvider.propTypes = {
   children: PropTypes.node,
 };
 
-export const useUserContext = () => useContext(UserContext);
+const useUserState = () => useContext(UserContext);
 
-export default UserContext;
+export { UserProvider, useUserState };
